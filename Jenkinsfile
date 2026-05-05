@@ -1,7 +1,7 @@
 pipeline {
     environment {
-        DOCKER_ID = "nimamrze"
-        DOCKER_IMAGE = "lioraapi"
+        DOCKER_ID = 'nimamrze'
+        DOCKER_IMAGE = 'lioraapi'
         DOCKER_TAG = "v.${BUILD_ID}.0"
     }
 
@@ -12,7 +12,7 @@ pipeline {
             steps {
                 script {
                     sh '''
-                    ddocker rm -f lioraapi || true
+                    docker rm -f lioraapi || true
                     docker build -t $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG .
                     sleep 6
                     '''
@@ -25,7 +25,7 @@ pipeline {
                 script {
                     sh '''
                     docker rm -f lioraapi || true
-                    docker run -d -p 8000:80 --name lioraapi $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG 
+                    docker run -d -p 8000:80 --name lioraapi $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG
                     sleep 10
                     '''
                 }
@@ -36,7 +36,7 @@ pipeline {
             steps {
                 script {
                     sh '''
-                    curl localhost:8000
+                    curl -f localhost:8000
                     '''
                 }
             }
@@ -44,21 +44,21 @@ pipeline {
 
         stage('Docker Push') {
             environment {
-                DOCKER_PASS = credentials("DOCKER_HUB_PASS")
+                DOCKER_CREDS = credentials('DOCKER_HUB_PASS')
             }
             steps {
                 script {
                     sh '''
-                    docker login -u $DOCKER_ID -p $DOCKER_PASS
-                    docker push $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG
-                    '''
+            echo "$DOCKER_CREDS_PSW" | docker login -u "$DOCKER_CREDS_USR" --password-stdin
+            docker push "$DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG"
+            '''
                 }
             }
         }
 
         stage('Deployment in dev') {
             environment {
-                KUBECONFIG = credentials("config")
+                KUBECONFIG = credentials('config')
             }
             steps {
                 script {
@@ -76,7 +76,7 @@ pipeline {
 
         stage('Deployment in staging') {
             environment {
-                KUBECONFIG = credentials("config")
+                KUBECONFIG = credentials('config')
             }
             steps {
                 script {
@@ -94,10 +94,10 @@ pipeline {
 
         stage('Deployment in prod') {
             environment {
-                KUBECONFIG = credentials("config")
+                KUBECONFIG = credentials('config')
             }
             steps {
-                timeout(time: 15, unit: "MINUTES") {
+                timeout(time: 15, unit: 'MINUTES') {
                     input message: 'Do you want to deploy in production ?', ok: 'Yes'
                 }
 
