@@ -36,7 +36,7 @@ pipeline {
             steps {
                 script {
                     sh '''
-                    curl -f localhost:8000
+                    curl -f http://localhost:8000
                     '''
                 }
             }
@@ -112,6 +112,20 @@ pipeline {
                     '''
                 }
             }
+        }
+    }
+    post {
+        failure {
+            echo 'This will run if the job failed'
+            mail to: 'nimamrze@gmail.com',
+                subject: "${env.JOB_NAME} - Build # ${env.BUILD_ID} has failed",
+                body: "For more info on the pipeline failure, check out the console output at ${env.BUILD_URL}"
+        }
+        success {
+            echo 'This will run if the job succeeded'
+            mail to: 'nimamrze@gmail.com',
+            subject: "${env.JOB_NAME} - Build # ${env.BUILD_ID} has succeeded",
+            body: "For more info on the pipeline success, check out the console output at ${env.BUILD_URL}"
         }
     }
 }
