@@ -125,7 +125,7 @@ pipeline {
             echo 'This will run if the job succeeded'
             mail to: 'nimamrze@gmail.com',
             subject: "${env.JOB_NAME} - Build # ${env.BUILD_ID} has succeeded",
-            body: "For more info on the pipeline success, check out the console output at ${env.BUILD_URL}"
+            body: "For more info on the pipeline1111 success, check out the console output at ${env.BUILD_URL}"
         }
     }
 }
