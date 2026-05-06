@@ -115,17 +115,11 @@ pipeline {
         }
     }
     post {
-        failure {
-            echo 'This will run if the job failed'
-            mail to: 'nimamrze@gmail.com',
-                subject: "${env.JOB_NAME} - Build # ${env.BUILD_ID} has failed",
-                body: "For more info on the pipeline failure, check out the console output at ${env.BUILD_URL}"
-        }
-        success {
-            echo 'This will run if the job succeeded'
-            mail to: 'nimamrze@gmail.com',
-            subject: "${env.JOB_NAME} - Build # ${env.BUILD_ID} has succeeded",
-            body: "For more info on the pipeline1111 success, check out the console output at ${env.BUILD_URL}"
-        }
+    always {
+        echo "POST ALWAYS WORKS"
+        mail to: "nimamrze@gmail.com",
+            subject: "Test email from Jenkins",
+            body: "Build ${env.BUILD_ID} finished with status: ${currentBuild.currentResult}"
     }
+}
 }
